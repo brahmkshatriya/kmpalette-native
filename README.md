@@ -1,10 +1,10 @@
 <img width="500px" src="art/logo.png" alt="logo"/>
 <br />
 
-![Maven Central](https://img.shields.io/maven-central/v/com.materialkolor.palette/core)
+![Maven Central](https://img.shields.io/maven-central/v/dev.brahmkshatriya.palette/core)
 [![Kotlin](https://img.shields.io/badge/kotlin-v2.3.10-blue.svg?logo=kotlin)](http://kotlinlang.org)
-[![Build](https://github.com/jordond/kmpalette/actions/workflows/ci.yml/badge.svg)](https://github.com/jordond/kmpalette/actions/workflows/ci.yml)
-[![License](https://img.shields.io/github/license/jordond/kmPalette)](https://opensource.org/license/mit/)
+[![Build](https://github.com/brahmkshatriya/kmpalette-native/actions/workflows/ci.yml/badge.svg)](https://github.com/brahmkshatriya/kmpalette-native/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/brahmkshatriya/kmpalette-native)](https://opensource.org/license/mit/)
 
 [![Compose Multiplatform](https://img.shields.io/badge/Compose%20Multiplatform-v1.10.1-blue)](https://github.com/JetBrains/compose-multiplatform)
 ![badge-android](http://img.shields.io/badge/platform-android-6EDB8D.svg?style=flat)
@@ -81,13 +81,13 @@ In `libs.versions.toml`:
 kmpalette = "4.0.0-beta02"
 
 [libraries]
-kmpalette-core = { module = "com.materialkolor.palette:core", version.ref = "kmpalette" }
+kmpalette-core = { module = "dev.brahmkshatriya.palette:core", version.ref = "kmpalette" }
 # Optional - standalone palette generation without Compose
-kmpalette-androidx-palette = { module = "com.materialkolor.palette:androidx-palette", version.ref = "kmpalette" }
+kmpalette-androidx-palette = { module = "dev.brahmkshatriya.palette:androidx-palette", version.ref = "kmpalette" }
 # Optional source libraries
-kmpalette-extensions-base64 = { module = "com.materialkolor.palette:extensions-base64", version.ref = "kmpalette" }
-kmpalette-extensions-network = { module = "com.materialkolor.palette:extensions-network", version.ref = "kmpalette" }
-kmpalette-extensions-file = { module = "com.materialkolor.palette:extensions-file", version.ref = "kmpalette" }
+kmpalette-extensions-base64 = { module = "dev.brahmkshatriya.palette:extensions-base64", version.ref = "kmpalette" }
+kmpalette-extensions-network = { module = "dev.brahmkshatriya.palette:extensions-network", version.ref = "kmpalette" }
+kmpalette-extensions-file = { module = "dev.brahmkshatriya.palette:extensions-file", version.ref = "kmpalette" }
 ```
 
 To add to a multiplatform project, add the dependency to the common source-set:

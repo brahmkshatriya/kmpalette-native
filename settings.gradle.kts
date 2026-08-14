@@ -2,6 +2,9 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
     repositories {
+        if (providers.gradleProperty("composeNativeLocal").orNull == "true") {
+            mavenLocal()
+        }
         gradlePluginPortal()
         google()
         mavenCentral()
@@ -11,6 +14,9 @@ pluginManagement {
 dependencyResolutionManagement {
     @Suppress("UnstableApiUsage")
     repositories {
+        if (providers.gradleProperty("composeNativeLocal").orNull == "true") {
+            mavenLocal()
+        }
         google()
         mavenCentral()
     }

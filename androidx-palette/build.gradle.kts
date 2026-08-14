@@ -11,7 +11,7 @@ plugins {
 
 kotlin {
     explicitApi()
-    jvmToolchain(jdkVersion = 11)
+    jvmToolchain(jdkVersion = 17)
     applyDefaultHierarchyTemplate()
 
     androidLibrary {
@@ -49,6 +49,9 @@ kotlin {
 
     macosX64()
     macosArm64()
+    linuxX64()
+    linuxArm64()
+    mingwX64()
 
     listOf(
         iosArm64(),

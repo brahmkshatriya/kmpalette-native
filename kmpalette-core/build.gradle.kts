@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.compose)
+    alias(libs.plugins.compose.native)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.android.library)
     alias(libs.plugins.poko)
@@ -18,7 +19,7 @@ mavenPublishing {
 
 kotlin {
     explicitApi()
-    jvmToolchain(jdkVersion = 11)
+    jvmToolchain(jdkVersion = 17)
     applyDefaultHierarchyTemplate()
 
     compilerOptions {
@@ -56,6 +57,7 @@ kotlin {
 
     macosX64()
     macosArm64()
+    desktopNative()
 
     listOf(
         iosArm64(),
@@ -75,6 +77,10 @@ kotlin {
             implementation(libs.compose.resources)
             implementation(libs.compose.runtime)
             implementation(libs.kotlinx.coroutines)
+        }
+
+        desktopNativeMain.dependencies {
+            implementation(libs.compose.native.material3)
         }
 
         commonTest.dependencies {
