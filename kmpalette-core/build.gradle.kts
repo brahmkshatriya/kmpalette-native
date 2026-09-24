@@ -55,7 +55,6 @@ kotlin {
         binaries.library()
     }
 
-    macosArm64()
     desktopNative()
 
     listOf(
@@ -105,6 +104,23 @@ kotlin {
             jvmMain.get().dependsOn(this)
             webMain.get().dependsOn(this)
             nativeMain.get().dependsOn(this)
+        }
+
+        listOf(
+            "jvmMain",
+            "jsMain",
+            "wasmJsMain",
+            "iosArm64Main",
+            "iosSimulatorArm64Main",
+            "linuxX64Main",
+            "linuxArm64Main",
+            "mingwX64Main",
+            "macosX64Main",
+            "macosArm64Main",
+        ).forEach { sourceSetName ->
+            named(sourceSetName) {
+                kotlin.srcDir("src/skikoTargetMain/kotlin")
+            }
         }
     }
 }

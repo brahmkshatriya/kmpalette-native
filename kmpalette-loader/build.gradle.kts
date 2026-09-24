@@ -1,10 +1,10 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.compose)
     alias(libs.plugins.compose.native)
-    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.android.library)
     alias(libs.plugins.poko)
     alias(libs.plugins.dokka)
@@ -53,7 +53,6 @@ kotlin {
         binaries.library()
     }
 
-    macosArm64()
     desktopNative()
 
     listOf(

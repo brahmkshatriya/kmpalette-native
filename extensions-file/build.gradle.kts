@@ -45,7 +45,7 @@ kotlin {
         binaries.library()
     }
 
-    macosArm64()
+    desktopNative()
 
     listOf(
         iosArm64(),
@@ -68,9 +68,22 @@ kotlin {
         desktopNativeMain.dependencies {
             implementation(libs.compose.native.ui)
         }
-
         commonTest.dependencies {
             implementation(kotlin("test"))
+        }
+    }
+}
+
+configurations.configureEach {
+    if (name.contains("macosX64", ignoreCase = true)) {
+        resolutionStrategy.eachDependency {
+            if (
+                requested.group == "io.github.vinceglb" &&
+                    requested.name == "filekit-core"
+            ) {
+                useVersion("0.13.0")
+                because("FileKit 0.16.0 no longer publishes a macOS x64 variant")
+            }
         }
     }
 }

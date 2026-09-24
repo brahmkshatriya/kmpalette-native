@@ -45,7 +45,7 @@ kotlin {
         binaries.library()
     }
 
-    macosArm64()
+    desktopNative()
 
     listOf(
         iosArm64(),
