@@ -11,6 +11,10 @@ plugins {
     alias(libs.plugins.publish)
 }
 
+mavenPublishing {
+    coordinates(artifactId = "loader")
+}
+
 kotlin {
     explicitApi()
     jvmToolchain(jdkVersion = 17)
@@ -20,7 +24,7 @@ kotlin {
         freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 
-    androidLibrary {
+    android {
         namespace = "${libs.versions.group.get()}.loader"
         compileSdk =
             libs.versions.sdk.compile
@@ -38,7 +42,7 @@ kotlin {
 
     jvm()
 
-    js(IR) {
+    js {
         browser()
         binaries.library()
     }
@@ -49,7 +53,6 @@ kotlin {
         binaries.library()
     }
 
-    macosX64()
     macosArm64()
     desktopNative()
 

@@ -1,0 +1,140 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    branches:
+      - main
+    types: [ opened, synchronize, reopened, ready_for_review ]
+    paths-ignore:
+      - 'art/**'
+      - '**.md'
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    name: "Verify"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: setup-java
+        uses: actions/setup-java@v6
+        with:
+          java-version: 25
+          distribution: temurin
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Binary Compatibility Validation
+        run: ./gradlew apiCheck --scan
+
+      - name: Check lock files
+        run: ./gradlew kotlinStoreYarnLock --scan
+
+      - name: Lint
+        run: ./gradlew spotlessCheck --scan
+
+      - name: Documentation
+        run: ./gradlew dokkaGenerate --scan
+
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        config: [
+          { target: "default", os: "ubuntu-latest", tasks: "allTest", continueOnError: false },
+          { target: "osx", os: "macos-latest", tasks: "test", continueOnError: false },
+        ]
+    runs-on: ${{ matrix.config.os }}
+    name: Test ${{ matrix.config.target }}
+    needs: verify
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: setup-java
+        uses: actions/setup-java@v6
+        with:
+          java-version: 25
+          distribution: temurin
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Cache Konan
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/.konan/caches
+            ~/.konan/dependencies
+            ~/.konan/kotlin-native-prebuilt-macos-*
+          key: ${{ runner.os }}-konan-${{ hashFiles('**/gradle/libs.versions.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-konan-
+
+      - name: Run ${{ matrix.config.target }} tests
+        continue-on-error: ${{ matrix.config.continueOnError }}
+        run: ./gradlew ${{ matrix.config.tasks }} --scan
+
+  test-instrumented:
+    strategy:
+      fail-fast: false
+      matrix:
+        api-level: [ 28, 36 ]
+    runs-on: ubuntu-latest
+    name: Test API ${{ matrix.api-level }}
+    needs: verify
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: setup-java
+        uses: actions/setup-java@v6
+        with:
+          java-version: 25
+          distribution: temurin
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Run tests for API ${{ matrix.api-level }}
+        timeout-minutes: 30
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          emulator-boot-timeout: 900
+          api-level: ${{ matrix.api-level }}
+          arch: x86_64
+          ram-size: 4096M
+          disable-animations: true
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-snapshot-load -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: ./gradlew :androidx-palette:connectedAndroidTest --scan
+
+      - name: Upload test report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: instrumented-test-report-api-${{ matrix.api-level }}
+          path: androidx-palette/build/reports/androidTests/

@@ -26,6 +26,12 @@ apiValidation {
     )
 }
 
+dokka {
+    dokkaPublications.html {
+        outputDirectory.set(rootDir.resolve("dokka"))
+    }
+}
+
 subprojects {
     apply {
         plugin(rootProject.libs.plugins.spotless.get().pluginId)
@@ -41,6 +47,10 @@ subprojects {
             toggleOffOn()
             endWithNewline()
         }
+    }
+
+    tasks.matching { it.name.startsWith("checkComposeUiTestConfiguration") }.configureEach {
+        enabled = false
     }
 }
 

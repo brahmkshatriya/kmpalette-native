@@ -14,7 +14,7 @@ kotlin {
     jvmToolchain(jdkVersion = 17)
     applyDefaultHierarchyTemplate()
 
-    androidLibrary {
+    android {
         namespace = "${libs.versions.group.get()}.palette"
         compileSdk =
             libs.versions.sdk.compile
@@ -29,6 +29,8 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
 
+        withHostTest {}
+
         withDeviceTest {
             instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
@@ -36,7 +38,7 @@ kotlin {
 
     jvm()
 
-    js(IR) {
+    js {
         browser()
         binaries.library()
     }
@@ -47,7 +49,6 @@ kotlin {
         binaries.library()
     }
 
-    macosX64()
     macosArm64()
     linuxX64()
     linuxArm64()
@@ -70,14 +71,6 @@ kotlin {
         commonTest.dependencies {
             implementation(kotlin("test"))
             implementation(libs.kotlinx.coroutines.test)
-        }
-
-        @Suppress("unused")
-        val skikoMain by creating {
-            dependsOn(commonMain.get())
-            nativeMain.get().dependsOn(this)
-            jvmMain.get().dependsOn(this)
-            webMain.get().dependsOn(this)
         }
 
         getByName("androidDeviceTest").dependencies {

@@ -16,7 +16,7 @@ kotlin {
     jvmToolchain(jdkVersion = 17)
     applyDefaultHierarchyTemplate()
 
-    androidLibrary {
+    android {
         namespace = "${libs.versions.group.get()}.extensions.file"
         compileSdk =
             libs.versions.sdk.compile
@@ -34,7 +34,7 @@ kotlin {
 
     jvm()
 
-    js(IR) {
+    js {
         browser()
         binaries.library()
     }
@@ -45,7 +45,6 @@ kotlin {
         binaries.library()
     }
 
-    macosX64()
     macosArm64()
 
     listOf(
