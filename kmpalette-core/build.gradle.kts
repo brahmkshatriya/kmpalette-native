@@ -1,6 +1,7 @@
 @file:Suppress("unused")
 
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.gradle.api.tasks.Sync
 
 plugins {
     alias(libs.plugins.multiplatform)
@@ -118,8 +119,13 @@ kotlin {
             "macosX64Main",
             "macosArm64Main",
         ).forEach { sourceSetName ->
+            val generatedSkikoSources =
+                tasks.register<Sync>("prepare${sourceSetName.replaceFirstChar(Char::uppercaseChar)}SkikoSources") {
+                    from("src/skikoTargetMain/kotlin")
+                    into(layout.buildDirectory.dir("generated/skikoTargetMain/$sourceSetName"))
+                }
             named(sourceSetName) {
-                kotlin.srcDir("src/skikoTargetMain/kotlin")
+                kotlin.srcDir(generatedSkikoSources)
             }
         }
     }
