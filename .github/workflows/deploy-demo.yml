@@ -68,8 +68,21 @@ jobs:
       - name: Build browser distribution
         run: ./gradlew :app:web:composeCompatibilityBrowserDistribution --scan
 
+      - name: Check Cloudflare configuration
+        id: cloudflare
+        env:
+          API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [[ -n "$API_TOKEN" && -n "$ACCOUNT_ID" ]]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Browser distribution built. Cloudflare Pages credentials are missing." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
       - name: Publish to Cloudflare Pages
         id: publish
+        if: steps.cloudflare.outputs.configured == 'true'
         uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -80,6 +93,7 @@ jobs:
             --branch=${{ steps.branch.outputs.name }}
 
       - name: Summary
+        if: steps.publish.outcome == 'success'
         env:
           BRANCH: ${{ steps.branch.outputs.name }}
           URL: ${{ steps.publish.outputs.deployment-url }}

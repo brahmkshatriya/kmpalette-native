@@ -43,7 +43,7 @@ jobs:
         run: ./gradlew apiCheck --scan
 
       - name: Check lock files
-        run: ./gradlew kotlinStoreYarnLock --scan
+        run: ./gradlew kotlinStoreYarnLock kotlinWasmStoreYarnLock --scan
 
       - name: Lint
         run: ./gradlew spotlessCheck --scan

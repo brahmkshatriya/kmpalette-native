@@ -1,13 +1,16 @@
 package com.kmpalette.internal
 
+import androidx.compose.ui.InternalComposeUiApi
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.registerSkikoComposeImplementation
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -25,6 +28,12 @@ import kotlin.test.assertTrue
  */
 class PainterImageTest {
     private val density = Density(density = 1f, fontScale = 1f)
+
+    @OptIn(InternalComposeUiApi::class)
+    @BeforeTest
+    fun registerGraphics() {
+        registerSkikoComposeImplementation()
+    }
 
     private class FixedSizePainter(
         override val intrinsicSize: Size,
